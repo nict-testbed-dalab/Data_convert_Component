@@ -49,7 +49,11 @@ for id_name, group in df_data.groupby('id'):
     work = grouped.first().reset_index()
 
     work.set_index('datetime', inplace=True)
-    df_data_dict[id_name] = work.resample(gr).interpolate(method=method_type, order=order_num)
+    if work['data'].count() <= order_num :
+        df_data_dict[id_name] = work.asfreq(gr)
+    else :
+        df_data_dict[id_name] = work.resample(gr).interpolate(method=method_type, order=order_num)
+
     df_data_dict[id_name]['id'] = id_name
     df_data_dict[id_name] = df_data_dict[id_name].reset_index()
 

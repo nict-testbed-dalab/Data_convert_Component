@@ -37,24 +37,17 @@ df['data'] = pandas.to_numeric(df['data'], errors="coerce")
 df_dict = {}
 df_result = pandas.DataFrame([], columns=['id', 'datetime', 'data'])
 
-if proc == 'max':
-    for id_name, group in df.groupby('id'):
-        group.set_index('datetime', inplace=True)
+for id_name, group in df.groupby('id'):
+    group.set_index('datetime', inplace=True)
+    if proc == 'max':
         df_work = group.resample(gr).max()
-        df_work['id'] = id_name
-        df_result = pandas.concat([df_result, df_work.reset_index()], axis=0, ignore_index=False) 
-elif proc == 'min':
-    for id_name, group in df.groupby('id'):
-        group.set_index('datetime', inplace=True)
+    elif proc == 'min':
         df_work = group.resample(gr).min()
-        df_work['id'] = id_name
-        df_result = pandas.concat([df_result, df_work.reset_index()], axis=0, ignore_index=False) 
-else :
-    for id_name, group in df.groupby('id'):
-        group.set_index('datetime', inplace=True)
+    else :
         df_work = group.resample(gr).mean()
-        df_work['id'] = id_name
-        df_result = pandas.concat([df_result, df_work.reset_index()], axis=0, ignore_index=False) 
+
+    df_work['id'] = id_name
+    df_result = pandas.concat([df_result, df_work.reset_index()], axis=0, ignore_index=False) 
 
 rsv = []
 for data in df_result.iterrows():
